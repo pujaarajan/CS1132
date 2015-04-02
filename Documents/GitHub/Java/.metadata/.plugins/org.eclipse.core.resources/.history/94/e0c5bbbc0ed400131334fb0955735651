@@ -1,0 +1,46 @@
+/** TIME SPENT: # hours and # minutes. */ 
+
+package student;
+import java.util.List;
+import danaus.*;
+
+public class Butterfly extends AbstractButterfly {
+	    public TileState[][] ts;
+	    
+	
+	    public @Override TileState[][] learn() {
+			ts = new TileState[getMapHeight()][getMapWidth()];
+			DFS();
+			return ts;
+		}
+	public void DFS() {
+		refreshState();
+		ts[state.location.row][state.location.col] = state;
+		int tsCol = state.location.col;
+		int tsRow = state.location.row;    
+		for (Direction d : Direction.values()){
+			if (ts[tsRow + d.dRow][tsCol + d.dCol] == null){
+				fly(d, Speed.NORMAL);
+				refreshState();
+			}  
+			else {
+				DFSfly(d);
+			}}
+	}
+	public void DFSfly(Direction d) throws ObstacleCollisionException{	
+		int tsCol = state.location.col;
+		int tsRow = state.location.row;
+		try{
+			fly(d, Speed.NORMAL);
+			DFS();
+			fly(Direction.opposite(d), Speed.NORMAL);
+		}
+		catch (danaus.ObstacleCollisionException e){ 
+			ts[tsRow + d.dRow][tsCol + d.dCol] = null ;
+		}
+	}
+
+	public @Override void run(List<Long> flowerIds) {
+		// TODO: implement
+	}
+}
